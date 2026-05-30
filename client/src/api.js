@@ -1,8 +1,11 @@
 import axios from 'axios';
 
-const API = axios.create({ 
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-});
+// Uses Render URL in production, localhost in development
+const baseURL = window.location.hostname === 'localhost'
+  ? 'http://localhost:5000/api'
+  : 'https://primevideo-mern.onrender.com/api';
+
+const API = axios.create({ baseURL });
 
 // Attach token to every request
 API.interceptors.request.use((req) => {
