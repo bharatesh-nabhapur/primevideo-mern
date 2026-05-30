@@ -124,6 +124,17 @@ export default function Dashboard() {
     }
   };
 
+  const handleRemoveFromWatchlist = async (title) => {
+    try {
+      const { data } = await API.delete('/watchlist/remove', { data: { title } });
+      toast.success(data.message);
+      setWatchlist((prev) => prev.filter((m) => m.title !== title));
+      setWatchlistCount(data.watchlistCount);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to remove movie.');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -266,6 +277,13 @@ export default function Dashboard() {
                       <span>{movie.genre}</span>
                     </div>
                     <div className="wi-badge">{movie.genre}</div>
+                    <button
+                      className="btn-remove"
+                      onClick={() => handleRemoveFromWatchlist(movie.title)}
+                      title="Remove from watchlist"
+                    >
+                      ✕
+                    </button>
                   </div>
                 ))
               )}

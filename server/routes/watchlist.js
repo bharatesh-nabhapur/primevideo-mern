@@ -59,7 +59,44 @@ router.post('/add', authMiddleware, async (req, res) => {
   }
 });
 
-// GET /api/watchlist - get user's watchlist
+// DELETE /api/watchlist/remove
+router.delete('/remove', authMiddleware, async (req, res) => {
+  try {
+    const { title } = req.body;
+    const userId = req.user.id;
+
+    const subscription = await Subscription.findOne({ user: userId, isActive: true });
+    if (!subscription) {
+      return res.status(400).json({ message: 'No active subscription found.' });
+    }
+
+    const watchlist = await Watchlist.findOne({ user: userId, subscription: subscription._id });
+    if (!watchlist) {
+      return res.status(404).json({ message: 'Watchlist not found.' });
+    }
+
+    const movieIndex = watchlist.movies.findIndex(
+      (m) => m.title.toLowerCase() === title.toLowerCase()
+    );
+
+    if (movieIndex === -1) {
+      return res.status(404).json({ message: `"${title}" not found in watchlist.` });
+    }
+
+    watchlist.movies.splice(movieIndex, 1);
+    await watchlist.save();
+
+    res.json({
+      message: `"${title}" removed from watchlist.`,
+      watchlistCount: watchlist.movies.length,
+      watchlist,
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;

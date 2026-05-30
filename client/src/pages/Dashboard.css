@@ -460,6 +460,27 @@
   font-weight: 600;
 }
 
+.btn-remove {
+  background: transparent;
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  color: #ff4444;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-remove:hover {
+  background: rgba(255, 68, 68, 0.15);
+  border-color: #ff4444;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .dash-grid {
